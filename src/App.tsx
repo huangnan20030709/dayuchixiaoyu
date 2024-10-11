@@ -1,6 +1,6 @@
-import { Application, Assets, Graphics, Sprite, TextStyle } from 'pixi.js';
+import { Application, Assets,   Sprite, TextStyle } from 'pixi.js';
 import { useEffect, useRef } from 'react';
-import { GameController } from './pojo/GameController';
+import { GameController } from './core/GameController';
 import TouchableText from './base/ui/TouchableText';
 function App() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -50,6 +50,7 @@ function App() {
     text.y = app.screen.height / 2 - 20;
     text.anchor.set(0.5);
     gameController.addChild(text);
+
   };
 
   return <div ref={divRef} style={{ width: '100vw', height: '100vh' }}></div>;
