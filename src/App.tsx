@@ -1,4 +1,4 @@
-import { Application, Assets,   Sprite, TextStyle } from 'pixi.js';
+import { Application, Assets,   DisplacementFilter,   Sprite, TextStyle, WRAP_MODES } from 'pixi.js';
 import { useEffect, useRef } from 'react';
 import { GameController } from './core/GameController';
 import TouchableText from './base/ui/TouchableText';
@@ -24,6 +24,7 @@ function App() {
     // 加载控制类
     const gameController = new GameController();
     app.stage.addChild(gameController);
+
     // 加载inner背景图
     const innerTexture = await Assets.load('/bg-inner.jpg');
     const innerSprite = new Sprite(innerTexture);
@@ -34,8 +35,36 @@ function App() {
     gameController.y = 60;
     gameController.addChild(innerSprite);
 
+    const displacementTexture = await Assets.load('/displacement_map_repeat.jpg');
+    const displacementSprite = new Sprite(displacementTexture);
+
+    // Make sure the sprite is wrapping.
+    displacementSprite.texture.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+
+    // Create a displacement filter
+    const displacementFilter = new DisplacementFilter({ sprite: displacementSprite, scale: { x: 60, y: 120 } });
+
+    displacementFilter.padding = 10;
+
+    displacementSprite.position = innerSprite.position;
+
+    app.stage.addChild(displacementSprite);
+
+    // Apply the filter
+    innerSprite.filters = [displacementFilter];
+
+    gameController.onUpdate( () => { 
+      
+      displacementSprite.x++;
+      // Reset x to 0 when it's over width to keep values from going to very huge numbers.
+      if (displacementSprite.x > displacementSprite.width)
+      {
+          displacementSprite.x = 0;
+      }
+    })
+
     // 添加开始按钮
-    let text = new TouchableText(
+    const text = new TouchableText(
       '开始游戏',
       new TextStyle({
         fill: '#ffffff',

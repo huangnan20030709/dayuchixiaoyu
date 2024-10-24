@@ -20,7 +20,15 @@ export class GameController extends Container {
   //
   ticker: Ticker | null = null;
   countTime = 0;
+
+  updateCallbacks: Array<() => void> = [];
+
+  onUpdate(callback: () => void) {
+    this.updateCallbacks.push(callback);
+  }
+
   update = ({ deltaMS }: Ticker) => {
+   this.updateCallbacks.forEach((callback) => callback());
     console.log('update');
 
     this.countTime += deltaMS;
@@ -32,16 +40,25 @@ export class GameController extends Container {
     }
 
     // 移动小鱼
-    for (let litterFish of this.litterFishArr) {
+    for (const litterFish of this.litterFishArr) {
       litterFish.x += litterFish.direction === 0 ? 1 : -1;
     }
     // 移动玩家控制的鱼
-    let plusSpeed = Math.floor(this.playerFish!.level / 50) / 2;
+    const plusSpeed = Math.floor(this.playerFish!.level / 50) / 2;
 
-    this.playerFish?.speed.down && (this.playerFish.y = this.playerFish.y + 2 + plusSpeed);
-    this.playerFish?.speed.up && (this.playerFish.y = this.playerFish.y - 2 - plusSpeed);
-    this.playerFish?.speed.left && (this.playerFish.x = this.playerFish.x - 2 - plusSpeed);
-    this.playerFish?.speed.right && (this.playerFish.x = this.playerFish.x + 2 + plusSpeed);
+    // this.playerFish?.speed.down && (this.playerFish.y = this.playerFish.y + 2 + plusSpeed);
+    if (this.playerFish?.speed.down) {
+      this.playerFish.y = this.playerFish.y + 2 + plusSpeed;
+    }
+    if (this.playerFish?.speed.up) {
+      this.playerFish.y = this.playerFish.y - 2 - plusSpeed;
+    }
+    if (this.playerFish?.speed.left) {
+      this.playerFish.x = this.playerFish.x - 2 - plusSpeed;
+    }
+    if (this.playerFish?.speed.right) {
+      this.playerFish.x = this.playerFish.x + 2 + plusSpeed;
+    }
 
     //
     this.litterFishArr = this.litterFishArr.filter((item) => {
@@ -53,14 +70,14 @@ export class GameController extends Container {
     });
 
     // 检查是否碰撞
-    let { isHit, litterFish } = this.checkIsHit();
+    const { isHit, litterFish } = this.checkIsHit();
 
     if (isHit) {
       this.removeChild(litterFish!);
       this.litterFishArr = this.litterFishArr.filter((item) => item !== litterFish);
       //
       console.log(this.playerFish!.level, litterFish?.level);
-      this.playerFish!.level = this.playerFish!.level + litterFish?.level!;
+      this.playerFish!.level = this.playerFish!.level  + litterFish!.level;
       console.log(this.playerFish!.level, litterFish);
 
       this.playerFish!.scale.set(1 + (this.playerFish!.level / 100) * 0.6);
@@ -217,13 +234,13 @@ export class GameController extends Container {
       // 玩家鱼和小鱼都是从左向右移动
       if (this.playerFish?.direction === 0 && litterFish.direction === 0 && playerBounds.x < litterBounds.x && playerBounds.x + playerBounds.width > litterBounds.x) {
         if (checkTopOrDownHit()) {
-          if (this.playerFish?.level! == litterFish.level) {
+          if (this.playerFish?.level == litterFish.level) {
             continue;
-          } else if (this.playerFish?.level! < litterFish.level) {
+          } else if (this.playerFish?.level < litterFish.level) {
             alert('游戏结束，最后得分为：' + this.playerFish?.level + ', 点击确定重新开始游戏');
             this.reStart();
             return { isHit: false, litterFish: null };
-          } else if (this.playerFish?.level! > litterFish.level) {
+          } else if (this.playerFish?.level > litterFish.level) {
             return { isHit: true, litterFish };
           }
         }
@@ -232,13 +249,13 @@ export class GameController extends Container {
       // 玩家鱼和小鱼都是从右向左移动
       if (this.playerFish?.direction === 1 && litterFish.direction === 1 && playerBounds.x > litterBounds.x && playerBounds.x < litterBounds.x + litterBounds.width) {
         if (checkTopOrDownHit()) {
-          if (this.playerFish?.level! == litterFish.level) {
+          if (this.playerFish?.level == litterFish.level) {
             continue;
-          } else if (this.playerFish?.level! < litterFish.level) {
+          } else if (this.playerFish?.level < litterFish.level) {
             alert('游戏结束，最后得分为：' + this.playerFish?.level + ', 点击确定重新开始游戏');
             this.reStart();
             return { isHit: false, litterFish: null };
-          } else if (this.playerFish?.level! > litterFish.level) {
+          } else if (this.playerFish?.level > litterFish.level) {
             return { isHit: true, litterFish };
           }
         }
@@ -247,13 +264,13 @@ export class GameController extends Container {
       // 玩家鱼从左向右，小鱼从右向左
       if (this.playerFish?.direction === 0 && litterFish.direction === 1 && playerBounds.x < litterBounds.x && playerBounds.x + playerBounds.width > litterBounds.x) {
         if (checkTopOrDownHit()) {
-          if (this.playerFish?.level! == litterFish.level) {
+          if (this.playerFish?.level == litterFish.level) {
             continue;
-          } else if (this.playerFish?.level! < litterFish.level) {
+          } else if (this.playerFish?.level < litterFish.level) {
             alert('游戏结束，最后得分为：' + this.playerFish?.level + ', 点击确定重新开始游戏');
             this.reStart();
             return { isHit: false, litterFish: null };
-          } else if (this.playerFish?.level! > litterFish.level) {
+          } else if (this.playerFish?.level > litterFish.level) {
             return { isHit: true, litterFish };
           }
         }
@@ -262,13 +279,13 @@ export class GameController extends Container {
       // 玩家鱼从右向左，小鱼从左向右
       if (this.playerFish?.direction === 1 && litterFish.direction === 0 && playerBounds.x > litterBounds.x && playerBounds.x < litterBounds.x + litterBounds.width) {
         if (checkTopOrDownHit()) {
-          if (this.playerFish?.level! == litterFish.level) {
+          if (this.playerFish?.level == litterFish.level) {
             continue;
-          } else if (this.playerFish?.level! < litterFish.level) {
+          } else if (this.playerFish?.level < litterFish.level) {
             alert('游戏结束，最后得分为：' + this.playerFish?.level + ', 点击确定重新开始游戏');
             this.reStart();
             return { isHit: false, litterFish: null };
-          } else if (this.playerFish?.level! > litterFish.level) {
+          } else if (this.playerFish?.level > litterFish.level) {
             return { isHit: true, litterFish };
           }
         }
