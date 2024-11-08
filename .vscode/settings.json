@@ -1,0 +1,16 @@
+{
+  "eslint.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit",
+  },
+  "editor.formatOnSave": true,
+  "git.autorefresh": true,
+  "stylelint.validate": [
+    "less",
+    "css"
+  ],
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

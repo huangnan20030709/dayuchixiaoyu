@@ -1,13 +1,10 @@
-import { Application, Assets,   DisplacementFilter,   Sprite, TextStyle, WRAP_MODES } from 'pixi.js';
-import { useEffect, useRef } from 'react';
-import { GameController } from './core/GameController';
+import { Application, Assets, DisplacementFilter, Sprite, TextStyle, WRAP_MODES } from 'pixi.js';
+import React, { useEffect, useRef } from 'react';
+
 import TouchableText from './base/ui/TouchableText';
+import { GameController } from './core/GameController';
 function App() {
   const divRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    init();
-  }, []);
 
   const init = async () => {
     const app = new Application();
@@ -53,15 +50,13 @@ function App() {
     // Apply the filter
     innerSprite.filters = [displacementFilter];
 
-    gameController.onUpdate( () => { 
-      
+    gameController.onUpdate(() => {
       displacementSprite.x++;
       // Reset x to 0 when it's over width to keep values from going to very huge numbers.
-      if (displacementSprite.x > displacementSprite.width)
-      {
-          displacementSprite.x = 0;
+      if (displacementSprite.x > displacementSprite.width) {
+        displacementSprite.x = 0;
       }
-    })
+    });
 
     // 添加开始按钮
     const text = new TouchableText(
@@ -69,18 +64,21 @@ function App() {
       new TextStyle({
         fill: '#ffffff',
         stroke: { color: '#004620', width: 12, join: 'round' },
-        fontSize: 48
+        fontSize: 48,
       }),
       () => {
         gameController.start(text);
-      }
+      },
     );
     text.x = gameController.width / 2;
     text.y = app.screen.height / 2 - 20;
     text.anchor.set(0.5);
     gameController.addChild(text);
-
   };
+
+  useEffect(() => {
+    init();
+  }, []);
 
   return <div ref={divRef} style={{ width: '100vw', height: '100vh' }}></div>;
 }

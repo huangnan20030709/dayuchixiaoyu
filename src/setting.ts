@@ -1,1 +1,1 @@
-export const paddimgTop = 15
+export const paddimgTop = 15;

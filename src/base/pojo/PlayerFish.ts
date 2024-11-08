@@ -7,7 +7,7 @@ export class PlayerFish extends Sprite {
     left: 0,
     right: 0,
     up: 0,
-    down: 0
+    down: 0,
   };
   text: Text = new Text('' + this._level, { fill: '#F00', fontSize: 28 });
 

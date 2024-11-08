@@ -1,0 +1,35 @@
+module.exports = {
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    sourceType: 'module',
+  },
+  plugins: [
+    'prettier',
+    '@typescript-eslint/eslint-plugin',
+    'react-hooks',
+    'react',
+    'simple-import-sort',
+    'unused-imports',
+  ],
+  env: {
+    browser: true,
+  },
+  rules: {
+    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+    'react-hooks/exhaustive-deps': 'error',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    'unused-imports/no-unused-imports': 'error',
+    '@typescript-eslint/no-explicit-any': 'off',
+    semi: 'off',
+    'react/display-name': 'error',
+    'eol-last': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
+  },
+  ignorePatterns: ['**/*.d.ts'],
+};
